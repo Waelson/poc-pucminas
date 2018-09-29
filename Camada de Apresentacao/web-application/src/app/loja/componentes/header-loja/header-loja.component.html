@@ -1,0 +1,95 @@
+
+
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <a class="navbar-brand" href="#" style="font-family: 'Lobster', cursive; font-size: 30px;">
+        &nbsp;&nbsp;
+        LOJA <br/>
+        &nbsp;&nbsp;ZUPA
+        &nbsp;&nbsp;
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="nav nav-pills mr-auto">
+        <li class="nav-item">
+          <a class="nav-link link_header" [routerLink]="['/loja/home']" routerLinkActive="active_header" >
+            <i class="fa fa-home"></i>  
+            Home <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item" *ngFor="let depto of departamentos">
+          <a class="nav-link link_header"  [routerLink]="['/loja/departamento', depto.nomeLink, depto.idDepartamento]" routerLinkActive="active_header" >
+            <i class="{{ depto.icone }}"></i>  
+            {{ depto.nome }}
+          </a>
+        </li>
+      </ul>
+
+      
+      <div *ngIf="!temUsuarioLogado()" class="form-inline mt-2 mt-md-0">  
+          <a [routerLink]="['/loja/login-cliente']" routerLinkActive="active_header"  class="btn btn-light" tooltip="Faça seu login"  placement="bottom">
+              <small>Olá! Faça seu login</small><br/>
+              <strong>Clique aqui</strong>
+          </a>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+      </div>      
+
+      <div *ngIf="temUsuarioLogado()" class="mt-2 mt-md-0 rounded border" style="text-align: center; padding: 10px;">  
+          
+        <small>Olá! Você está logado como</small><br/>
+        <strong>{{ getUsuarioLogado() }}</strong><br>
+        <a  [routerLink]="['/loja/area-do-cliente']">
+          Área do Cliente
+        </a> 
+        |
+        <a href="javascript:void(0)" (click)="logoff()">Sair</a>
+      </div>
+    
+      
+      <div class="form-inline mt-2 mt-md-0">    
+          &nbsp;
+          <a [routerLink]="['/loja/carrinho']" routerLinkActive="active_header"  class="btn btn-light" [tooltip]="tooltipCarrinho"  placement="bottom">
+            <i class="fa fa-shopping-basket"></i><br/>
+            <strong>Carrinho</strong>&nbsp;
+            <span style="width: 40px;" class="badge badge-warning">{{ totalItens }}</span>            
+          </a>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div> 
+    
+    </div>
+  </nav>
+</header>
+
+
+
+<!--
+<header>
+
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">Fixed navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <div class="form-inline mt-2 mt-md-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"/>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </div>
+    </div>
+  </nav>
+</header>
+-->

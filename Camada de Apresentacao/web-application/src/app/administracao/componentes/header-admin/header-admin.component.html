@@ -1,0 +1,65 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="border-bottom: 6px solid #FFBF00;">
+    <a class="navbar-brand" href="#" style="font-family: 'Lobster', cursive; font-size: 30px;">
+        &nbsp;&nbsp;
+        Drop Shipping
+        &nbsp;&nbsp;
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="nav nav-pills mr-auto">
+
+        <li class="nav-item active">
+          <a [routerLink]="['/administrativo/console/controle-de-vendas']" routerLinkActive="active_header"  class="nav-link link_header">
+            <i class="fa fa-money"></i>
+            Controle de Vendas</a>
+        </li>
+
+        <li class="nav-item active">
+            <a class="nav-link link_header" href="javascript:void(0)" (click)="onClickMenu()">
+              <i class="fa fa-undo"></i>
+              Devolução
+            </a>
+        </li>    
+        
+        <li class="nav-item active">
+            <a class="nav-link link_header" href="javascript:void(0)" (click)="onClickMenu()">
+              <i class="fa fa-truck"></i>
+              Logística
+            </a>
+        </li>
+
+        <li class="nav-item active">
+            <a class="nav-link link_header" href="javascript:void(0)" (click)="onClickMenu()">
+              <i class="fa fa-bullhorn"></i>                 
+              Propagandas
+            </a>
+        </li>
+        
+        <li class="nav-item active">
+            <a class="nav-link link_header" href="javascript:void(0)" (click)="onClickMenu()">
+              <i class="fa fa-map"></i>
+              SAC
+            </a>
+        </li>        
+        
+        <li class="nav-item active">
+            <a class="nav-link link_header" href="javascript:void(0)" (click)="onClickMenu()">
+              <i class="fa fa-flag"></i>
+              Relatórios
+            </a>
+        </li>        
+      </ul>
+
+
+
+      <div class="mt-2 mt-md-0 rounded border" style="text-align: center; padding: 10px; border: 2px solid #FFBF00!important; background-color: #FFBF00;">            
+          <small>Olá! Você está logado como</small><br/>
+          <strong>{{ nomeUsuario }}</strong> | 
+          <a href="javascript:void(0)" (click)="logoff()">Sair</a>
+        </div>
+    </div>
+  </nav>
+</header>

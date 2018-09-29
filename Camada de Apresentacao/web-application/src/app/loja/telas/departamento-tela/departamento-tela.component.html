@@ -1,0 +1,54 @@
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<div class="container">
+  <nav aria-label="breadcrumb" >
+    <ol class="breadcrumb" style="background-color: white;">
+      <li class="breadcrumb-item"><a [routerLink]="['/loja/home']" routerLinkActive="router-link-active" >Home</a></li>
+      <li class="breadcrumb-item">Departamento</li>
+      <li class="breadcrumb-item active" aria-current="page">{{ departamento.nome }}</li>
+    </ol>
+  </nav>
+
+
+  <div class="row">
+    <div class="col-md-3">
+      <!-- Menu de categorias -->
+      <div class="p-3 mb-3 bg-light rounded">
+        <h4 class="font-italic">{{ departamento.nome }}</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item" *ngFor="let categoria of categorias">
+            <a class="nav-link active" [routerLink]="['/loja/departamento', this.departamento.nomeLink, this.departamento.idDepartamento]" [queryParams]="queryParamCategoria(categoria.idCategoria)" >{{ categoria.nome }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <!-- Lista de produto -->
+        <div class="row" *ngIf="temProdutos()">
+          <div  *ngFor="let produto of produtos" class="col-4">
+            <app-produto-cartao-loja [produto]="produto"></app-produto-cartao-loja>
+          </div>
+        </div>  
+
+        <!-- Mensagem de produtos nao encontrados -->  
+        <div class="row" *ngIf="!temProdutos()">
+          <div class="col-12">
+              <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">
+                  <i class="fa fa-exclamation-triangle fa-2x"></i>&nbsp;
+                  Atenção
+                </h4>
+                Infelizmente, nós não encontramos nenhum produto nessa categoria.
+                <hr>
+                <p class="mb-0">Por favor, selecione uma outra categoria.</p>
+              </div>
+          </div>          
+        </div>
+    </div>
+  </div>  
+</div>

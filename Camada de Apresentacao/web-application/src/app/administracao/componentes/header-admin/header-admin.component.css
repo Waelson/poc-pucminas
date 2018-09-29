@@ -1,0 +1,10 @@
+.active_header {
+    background-color:#FFBF00;
+    color: #000;
+    font-weight: bold!important;
+}
+
+.link_header {
+    color: #000;
+    font-weight: normal;    
+}

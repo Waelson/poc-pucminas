@@ -1,0 +1,48 @@
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<div class="container">
+    <nav aria-label="breadcrumb" >
+      <ol class="breadcrumb" style="background-color: white;">
+        <li class="breadcrumb-item"><a [routerLink]="['/loja/home']" routerLinkActive="router-link-active" >Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Área do Cliente</li>
+      </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-3">
+          <!-- Menu de categorias -->
+          <div class="p-3 mb-3 bg-light rounded">
+            <h5 class="font-italic">Menu</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" [routerLink]="['/loja/area-do-cliente/historico-de-compras']">
+                  <i class="fa fa-history"></i>
+                  Histórico de Pedidos
+                </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" [routerLink]="['/loja/area-do-cliente/reclamacoes']">
+                    <i class="fa fa-book"></i>
+                    Ocorrências
+                  </a>
+                </li>              
+              <li class="nav-item">
+                  <a class="nav-link" [routerLink]="['/loja/area-do-cliente/meus-dados']">
+                    <i class="fa fa-user"></i>
+                    Meus Dados
+                  </a>
+                </li>              
+            </ul>
+          </div>
+        </div>
+    
+        <div class="col-md-9">
+          <router-outlet></router-outlet>
+        </div>
+  </div>        
+
+</div>
