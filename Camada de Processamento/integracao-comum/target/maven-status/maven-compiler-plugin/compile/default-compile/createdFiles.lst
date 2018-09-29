@@ -1,0 +1,10 @@
+br/pucmg/integracao/comum/service/EchoServiceActivator.class
+br/pucmg/integracao/comum/util/JsonUtil.class
+br/pucmg/integracao/comum/enums/TipoMensagemEnum.class
+br/pucmg/integracao/comum/protocolo/Mensagem.class
+br/pucmg/integracao/comum/AppMain.class
+br/pucmg/integracao/comum/model/Produto.class
+br/pucmg/integracao/comum/util/DataUtil.class
+br/pucmg/integracao/comum/util/RedeUtil.class
+br/pucmg/integracao/comum/protocolo/MensagemBuilder.class
+br/pucmg/integracao/comum/enums/CabecalhoEnum.class

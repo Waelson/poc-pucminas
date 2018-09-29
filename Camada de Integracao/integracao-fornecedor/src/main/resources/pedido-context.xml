@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:int-ip="http://www.springframework.org/schema/integration/ip"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms-4.3.xsd
+		http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip-4.3.xsd
+		http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.3.xsd">
+	
+	<import resource="tcp-saida-context.xml"/>
+	
+	
+	<!-- ============================= DEFAULT POLLER =========================== -->
+	<!-- Define o intervalo de poller de fila do ActiveMQ  -->
+	<int:poller default="true" fixed-delay="5000"/>
+		
+	
+	
+	<!-- ================== FILA DE RECEPCAO DE MENSAGEM DE PEDIDOS ================== -->
+	<!-- Fila de pedidos utilizada no ActiveMQ -->
+	<bean id="queueEnvioPedidoFornecedor" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="queue.envio.pedido.fornecedor"></constructor-arg>
+	</bean>
+	
+	
+	<!-- ================== ADAPTER JMS ================== -->
+	<!-- Usa a ConnectionFactory e o Destination para estabelecer uma conexao com o ActiveMQ -->
+	<int-jms:inbound-channel-adapter connection-factory="jmsConnectionFactory" channel="inputEnvioPedidoFornecedorActiveMq" destination="queueEnvioPedidoFornecedor"/>
+	
+	
+	
+	<!-- ================== CHANNELS ================== -->
+	<!-- Canal que recebe as informacoes da requisicao -->
+	<int:channel id="inputEnvioPedidoFornecedorActiveMq"/>
+	
+	
+	
+	
+	<int:service-activator ref="printMessage" input-channel="inputEnvioPedidoFornecedorActiveMq" method="print"/>
+	
+	
+		
+	<!-- Bean para logar a mensagem recebida -->
+	<bean id="printMessage" class="br.pucminas.integracao.fornecedor.util.LogMessage"/>
+	
+	<!-- ================== CONFIGURACAO DO SERVIDOR TCP ================== -->
+	
+	
+	<int-ip:tcp-outbound-gateway auto-startup="false" 			
+			connection-factory="tcpConnectionFactory" 
+			request-channel="outputEnvioPedidoFornecedorActiveMq" 
+			reply-channel="outputTcpProdutoChannel" />
+	
+
+
+	
+
+</beans>

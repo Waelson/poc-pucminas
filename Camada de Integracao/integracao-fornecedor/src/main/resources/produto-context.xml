@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:int-ip="http://www.springframework.org/schema/integration/ip"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms-4.3.xsd
+		http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip-4.3.xsd
+		http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.3.xsd">
+	
+	
+	<!-- Importa as configuracoes da Connection Factory do ActiveMQ -->
+	<import resource="jms-context.xml"/>
+	<import resource="tcp-context.xml"/>
+	
+	
+	<!-- Fila de produtos utilizada no ActiveMQ -->
+	<bean id="queueProdutoFornecedor" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="queue.produto.fornecedor"></constructor-arg>
+	</bean>		
+	
+	<bean id="byteArrayParaStringConverter" class="br.pucminas.integracao.fornecedor.converter.ByteArrayParaStringConverter"/>
+	
+	<!-- ================== CONFIGURACAO DO SERVIDOR TCP ================== -->
+	<int-ip:tcp-inbound-gateway
+			auto-startup="true" 			
+			connection-factory="tcpConnectionFactory" 
+			request-channel="inputTcpProdutoChannel" 
+			reply-channel="outputTcpProdutoChannel" />
+	
+	
+	
+	
+	<!-- ================== CONFIGURACAO DAS ROTAS HTTP ================== -->
+	
+	<!-- Recebe as requisicoes web para cadastrar os produtos -->
+	<int-http:inbound-gateway
+			request-channel="inputHttpProdutoChannel"
+			reply-channel="outputHttpProdutoChannel"
+			supported-methods="POST" 
+			path="/produto" 		
+			request-payload-type="br.pucmg.integracao.comum.model.Produto"				
+			>
+		<int-http:request-mapping consumes="application/json" produces="application/json"/>
+		<int-http:cross-origin origin="*"/>
+	</int-http:inbound-gateway>	
+	
+	
+	
+	<!-- ================== GATEWAY ================== -->
+	<int:gateway id="jmsGateway" service-interface="br.pucminas.integracao.fornecedor.jms.JmsGateway" default-request-channel="outputActiveMq"/>
+	
+	
+	
+	<!-- ================== CHANNELS ================== -->
+	<!-- Canal que recebe as informacoes da requisicao -->
+	<int:channel id="inputHttpProdutoChannel"/>
+	
+	
+	<int:channel id="inputTcpProdutoChannel"/>
+	
+	
+	<!-- Canal que recebe a mensagem produto para ser enviada ao ActiveMQ  -->
+	<int:channel id="outputActiveMq"/>		
+	
+	
+	<!-- Canal de resposta da requisicao -->
+	<int:channel id="outputHttpProdutoChannel"/>
+	
+	
+	<int:channel id="outputTcpProdutoChannel"/>
+	
+	
+	
+	<!-- ================== SERVICE ACTIVATOR ================== -->
+	<int:service-activator id="incluirProdutoHttpServiceActivator" method="incluirHttp" input-channel="inputHttpProdutoChannel" output-channel="outputHttpProdutoChannel">
+		<bean class="br.pucminas.integracao.fornecedor.produto.ProdutoServiceActivator">
+			<constructor-arg name="gateway" ref="jmsGateway"/>
+			<constructor-arg name="converter" ref="byteArrayParaStringConverter"/>
+		</bean>
+	</int:service-activator>	
+	
+	
+	<int:service-activator id="incluirProdutoTcpServiceActivator" method="incluirTcp" input-channel="inputTcpProdutoChannel" output-channel="outputTcpProdutoChannel">
+		<bean class="br.pucminas.integracao.fornecedor.produto.ProdutoServiceActivator">
+			<constructor-arg name="gateway" ref="jmsGateway"/>
+			<constructor-arg name="converter" ref="byteArrayParaStringConverter"/>
+		</bean>
+	</int:service-activator>		
+	
+	
+	
+	<!-- ================== ADAPTER JMS ================== -->
+	<!-- Porta de saida para envio de mensagens ao ActiveMQ -->
+	<int-jms:outbound-channel-adapter 
+		connection-factory="jmsConnectionFactory" channel="outputActiveMq" destination="queueProdutoFornecedor"/>	
+
+	
+
+</beans>

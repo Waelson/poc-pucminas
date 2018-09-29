@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:int-ip="http://www.springframework.org/schema/integration/ip"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms-4.3.xsd
+		http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip-4.3.xsd
+		http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.3.xsd">
+	
+	
+	
+	
+	<bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="tcp://localhost:61616"/>
+			</bean>
+		</property>
+	</bean>		
+	
+    <bean id="queue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.envio.pedido.fornecedor"/>
+    </bean>	
+    
+    <bean id="replyQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="reply.queue.envio.pedido.fornecedor"/>
+    </bean>    
+		
+	
+	<int:channel id="jmsChannel"/>
+	
+	<int:channel id="replyJmsChannel"/>
+	
+	<int:channel id="tcpChannel"/>
+	
+	<int:channel id="replyTcpChannel"/>
+	
+	
+	
+	
+	<int-jms:inbound-gateway
+		id="entradaJMS"
+		connection-factory="connectionFactory"
+		request-destination="queue"
+		request-channel="jmsChannel" default-reply-destination="replyQueue" />	
+	
+	
+	<bean id="mp1" class="br.pucminas.integracao.fornecedor.util.LogMessage" />
+
+	<int:service-activator id="logSaidaJMS" ref="mp1" method="print" input-channel="jmsChannel" output-channel="tcpChannel"/>
+	
+	
+	<int:header-value-router input-channel="tcpChannel" header-name="cnpj">
+		<int:mapping value="11222333000101" channel="tcpChannel-00000000000"/>
+		<int:mapping value="22333444000122" channel="tcpChannel-111111111111"/>
+	</int:header-value-router>	
+	
+	<int:channel id="tcpChannel-00000000000"/>
+	<int:channel id="tcpChannel-111111111111"/>
+	
+	
+	<!-- TCP-00000000000 -->
+	
+	<int-ip:tcp-connection-factory id="tcpConnectionFactory-00000000000"
+		type="client"
+		host="${tcp.host.saida:localhost}"
+		port="${tcp.socket.port:5000}"
+		single-use="${tcp.socket.single.use:true}"		
+		serializer="byteArrayCrLf1"
+		deserializer="byteArrayCrLf1"		
+		using-nio="true"/>	
+		
+	<!-- TCP-111111111111 -->
+	
+	<int-ip:tcp-connection-factory id="tcpConnectionFactory-111111111111"
+		type="client"
+		host="${tcp.host.saida:localhost}"
+		port="${tcp.socket.port:5001}"
+		single-use="${tcp.socket.single.use:true}"		
+		serializer="byteArrayCrLf1"
+		deserializer="byteArrayCrLf1"		
+		using-nio="true"/>			
+		
+	
+	<bean id="byteArrayCrLf1" class="br.pucminas.integracao.fornecedor.util.ByteArrayCrLfSerializer">		
+		<property name="maxMessageSize" value="5000"/>
+	</bean>		
+
+
+
+	
+
+	<int-ip:tcp-outbound-gateway 
+		id="saidaTCP-00000000000" 
+		request-channel="tcpChannel-00000000000" 
+		reply-channel="replyTcpChannel"
+		connection-factory="tcpConnectionFactory-00000000000"
+		remote-timeout="1000"
+		request-timeout="1000"
+		reply-timeout="-1"/>
+		
+		
+	<int-ip:tcp-outbound-gateway 
+		id="saidaTCP-111111111111" 
+		request-channel="tcpChannel-111111111111" 
+		reply-channel="replyTcpChannel"
+		connection-factory="tcpConnectionFactory-111111111111"
+		remote-timeout="1000"
+		request-timeout="1000"
+		reply-timeout="-1"/>		
+		
+		
+	<bean id="mp2" class="br.pucminas.integracao.fornecedor.util.LogMessage" />
+
+	<int:service-activator id="logSaidaTCP" ref="mp2" method="print" input-channel="replyTcpChannel" output-channel="replyJmsChannel"/>
+	
+		
+	
+	<!-- SAIDA JMS -->
+	<int-jms:outbound-channel-adapter 
+		connection-factory="connectionFactory"
+		channel="replyJmsChannel"
+		destination="replyQueue"/>	
+	
+	
+
+	
+</beans>

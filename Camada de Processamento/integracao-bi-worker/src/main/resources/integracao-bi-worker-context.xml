@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:int-file="http://www.springframework.org/schema/integration/file"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-4.3.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-4.3.xsd
+		http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms-4.3.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.3.xsd">
+
+
+	<!-- ======================================== INTEGRATION ======================================== -->
+	
+	<!-- Adapatador conectado ao ActiveMQ para recepcao de mensagens -->
+	<int-jms:message-driven-channel-adapter id="activeMqAdaptar" 
+			connection-factory="connectionFactory" destination="queueArquivosBi" channel="inputActiveMqChannel" />
+	
+	
+	<!-- Apos receber a mensagem do ActiveMQ a mensagem sera colocada em um fila interna-->
+	<int:channel id="inputActiveMqChannel"/>
+		
+	
+	<!-- Esse activator tem o proposito apenas de logar a mensagem no console -->
+	<int:service-activator id="logServiceActivator" method="logar" input-channel="inputActiveMqChannel" output-channel="jsonToObjectChannel">
+		<bean class="br.pucminas.integracao.bi.worker.eai.LogServiceActivator"/>
+	</int:service-activator>
+	
+	
+	<!-- Recebe a mensagem json para converte-lo em objeto -->
+	<int:channel id="jsonToObjectChannel"/>
+	
+	
+	<int:json-to-object-transformer input-channel="jsonToObjectChannel" output-channel="jobLaunchRequestChannel"
+			type="br.pucminas.integracao.bi.worker.model.MensagemGeracaoArquivo"/>
+	
+	
+	<!-- Recebe a mensagem para converte-lo em JobLaunchRequest -->
+	<int:channel id="jobLaunchRequestChannel"/>
+	
+	
+	<!-- Converte um objeto MensagemGeracaoArquivo em JobLaunchRequest  -->
+	<int:transformer id="jobLaunchRequestTransformer" method="convert" 
+				input-channel="jobLaunchRequestChannel" output-channel="runJobLaunchChannel">
+		<bean class="br.pucminas.integracao.bi.worker.eai.JobLaunchRequestTransformer"/>
+	</int:transformer>
+	
+	
+	<!-- Recebe uma mensagem no formato JobLaunchRequest para processamento do job  -->
+	<int:channel id="runJobLaunchChannel"/>
+	
+	
+	<!-- Responsavel por solicitar o processamento do job -->
+	<int:service-activator id="runJobLaunchRequest" input-channel="runJobLaunchChannel" output-channel="jobExecutionChannel" >
+		<bean class="org.springframework.batch.integration.launch.JobLaunchingMessageHandler">
+			<constructor-arg name="jobLauncher">
+				<bean class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+					<property name="jobRepository" ref="jobRepository"/>
+					<property name="taskExecutor" ref="taskExecutor"/>
+				</bean>			
+			</constructor-arg>
+		</bean>
+	</int:service-activator>
+	
+	
+	<!-- Recebe uma mensagem no formato JobExecution -->
+	<int:channel id="jobExecutionChannel"/>
+	
+	
+	<!-- Tranforma uma mensagem do tipo JobExecution em String -->
+	<int:transformer input-channel="jobExecutionChannel" method="transform" output-channel="logEndChannel">
+		<bean class="br.pucminas.integracao.bi.worker.eai.StringTransformer"/>
+	</int:transformer>
+	
+	
+	<!-- Recebe um mensagem do String -->
+	<int:channel id="logEndChannel"/>
+	
+	
+	<!-- Loga uma String nome console -->
+	<int:service-activator id="logEndServiceActivator" method="log" input-channel="logEndChannel">
+		<bean class="br.pucminas.integracao.bi.worker.eai.LogEndServiceActivator"/>
+	</int:service-activator>	
+
+	
+	<!-- Objeto responsavel pela criacao das conexoes com o ActiveMQ -->
+	<bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="tcp://localhost:61616"/>
+			</bean>
+		</property>
+	</bean>	
+
+	<!-- Objeto que representa uma fila no ActiveMQ -->
+	<bean id="queueArquivosBi" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="queue.arquivos.bi"></constructor-arg>
+	</bean>	
+	
+	<!-- ======================================== BATCH ======================================== -->
+	
+	
+	<!-- Task utilizado na execucao dos jobs -->
+	<bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor"/>
+	
+	
+	<!-- Repositorio de jobs estara na memoria (nao colocar em producao dessa maneira) -->
+	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean"/>
+		
+	
+	<!-- Conexao com o banco de dados da apliacao -->
+	<bean id="dataSource" primary="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/pucminas?useSSL=false" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	</bean>	
+	
+	
+	<!-- Objeto de leitura paginada no banco -->
+	<bean id="pessoaItemReader" class="org.springframework.batch.item.database.JdbcPagingItemReader" scope="step">		
+		<property name="pageSize" value="1000"/>		
+		<property name="dataSource" ref="dataSource"/>
+		<property name="fetchSize" value="1000"/>
+		<property name="rowMapper">
+			<bean class="br.pucminas.integracao.bi.worker.eai.PessoaMapper"/>
+		</property>
+		<property name="queryProvider">
+			<bean class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean">		
+				<property name="dataSource" ref="dataSource"/>	
+				<property name="selectClause" value="SELECT nome, sobrenome, dataNascimento "/>
+				<property name="fromClause" value="FROM pessoa"></property>
+				<property name="databaseType" value="MySQL"></property>
+				<property name="sortKey" value="nome"></property>
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- Objeto de escrita do arquivo -->
+	<bean id="pessoaItemWrite" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+		<property name="resource" value="file://#{jobParameters['output.dir']}/#{jobParameters['output.filename']}"/>
+		<property name="encoding" value="UTF-8"></property>
+		<property name="shouldDeleteIfEmpty" value="true"></property>
+		<property name="lineAggregator">
+			<bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+				<property name="delimiter" value=","/>
+				<property name="fieldExtractor">
+					<bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+						<property name="names">
+							<array>
+								<value>nome</value>
+								<value>sobrenome</value>
+								<value>dataNascimento</value>
+							</array>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</property>		
+	</bean>
+	
+	<bean id="pessoaItemWriteXml" class="org.springframework.batch.item.xml.StaxEventItemWriter" scope="step">
+		<property name="resource" value="file://#{jobParameters['output.dir']}/#{jobParameters['output.filename']}.XML"/>
+		<property name="rootTagName" value="pessoas"/>
+		<property name="marshaller">
+			<bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+				<property name="aliases">
+					<map>
+						<entry key="pessoa" value="br.pucminas.integracao.bi.worker.model.Pessoa"/>
+					</map>
+				</property>
+			</bean>
+		</property>
+	
+	</bean>
+	
+	<batch:job id="JOB_PEDIDOS">
+		<batch:step id="validaGeracao" allow-start-if-complete="true">
+			<batch:tasklet>
+				<batch:chunk reader="pessoaItemReader" writer="pessoaItemWriteXml" commit-interval="500"/>
+			</batch:tasklet>			
+		</batch:step>
+	</batch:job>
+	
+
+</beans>
