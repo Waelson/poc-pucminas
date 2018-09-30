@@ -1,3 +1,0 @@
-interface PerfilModel {
-    nome: string;
-}
