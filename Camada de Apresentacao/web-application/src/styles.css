@@ -1,0 +1,225 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~font-awesome/css/font-awesome.css";
+
+
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+
+
+/* CSS DO ANGULAR NOTIFIER  */
+.notifier__container * {
+    box-sizing: border-box;
+  }
+  
+  .notifier__container-list {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style-type: none;
+  }
+  
+  .notifier__notification {
+    display: block;
+    position: fixed;
+    visibility: hidden;
+    z-index: 10000;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  
+  .notifier__notification--material {
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: default;
+  padding-top: 11px;
+  padding-right: 26px;
+  padding-bottom: 10px;
+  padding-left: 26px;
+}
+
+.notifier__notification--material .notifier__notification-message {
+  display: inline-block;
+  margin-top: 0;
+  margin-bottom: 0;
+  vertical-align: top;
+  line-height: 32px;
+  font-size: 15px;
+}
+
+.notifier__notification--material .notifier__notification-button {
+  display: inline-block;
+  transition: opacity .2s ease;
+  opacity: .5;
+  margin-right: -10px;
+  margin-left: 10px;
+  outline: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+  vertical-align: top;
+}
+
+.notifier__notification--material .notifier__notification-button:hover, .notifier__notification--material .notifier__notification-button:focus {
+  opacity: 1;
+}
+
+.notifier__notification--material .notifier__notification-button:active {
+  transform: scale(0.82);
+  opacity: 1;
+}
+
+/*# sourceMappingURL=theme-material.css.map */
+
+
+.notifier__container * {
+    box-sizing: border-box;
+  }
+  
+  .notifier__container-list {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style-type: none;
+  }
+  
+  .notifier__notification {
+    display: block;
+    position: fixed;
+    visibility: hidden;
+    z-index: 10000;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  
+  .notifier__notification--material {
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    cursor: default;
+    padding-top: 11px;
+    padding-right: 26px;
+    padding-bottom: 10px;
+    padding-left: 26px;
+  }
+  
+  .notifier__notification--material .notifier__notification-message {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
+    vertical-align: top;
+    line-height: 32px;
+    font-size: 15px;
+  }
+  
+  .notifier__notification--material .notifier__notification-button {
+    display: inline-block;
+    transition: opacity .2s ease;
+    opacity: .5;
+    margin-right: -10px;
+    margin-left: 10px;
+    outline: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 6px;
+    width: 32px;
+    height: 32px;
+    vertical-align: top;
+  }
+  
+  .notifier__notification--material .notifier__notification-button:hover, .notifier__notification--material .notifier__notification-button:focus {
+    opacity: 1;
+  }
+  
+  .notifier__notification--material .notifier__notification-button:active {
+    transform: scale(0.82);
+    opacity: 1;
+  }
+  
+  .notifier__notification--default {
+    background-color: #444;
+    color: #FFF;
+  }
+  
+  .notifier__notification--default .notifier__notification-button-icon {
+    fill: #FFF;
+  }
+  
+  .notifier__notification--error {
+    background-color: #D9534F;
+    color: #FFF;
+  }
+  
+  .notifier__notification--error .notifier__notification-button-icon {
+    fill: #FFF;
+  }
+  
+  .notifier__notification--info {
+    background-color: #5BC0DE;
+    color: #FFF;
+  }
+  
+  .notifier__notification--info .notifier__notification-button-icon {
+    fill: #FFF;
+  }
+  
+  .notifier__notification--success {
+    background-color: #5CB85C;
+    color: #FFF;
+  }
+  
+  .notifier__notification--success .notifier__notification-button-icon {
+    fill: #FFF;
+  }
+  
+  .notifier__notification--warning {
+    background-color: #F0AD4E;
+    color: #FFF;
+  }
+  
+  .notifier__notification--warning .notifier__notification-button-icon {
+    fill: #FFF;
+  }
+  
+  /*# sourceMappingURL=styles.css.map */
+
+
+  /* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 60px 15px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
