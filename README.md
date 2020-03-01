@@ -6,7 +6,7 @@
 <ul>
   <li>Java 8</li>
   <li>Spring Boot</li>  
-  <li>Spring Cloud (Netflix Cloud)</li>
+  <li>Spring Cloud (Registration and Service Discovery, Distributed/versioned configuration, Load balancing, Routing and Circuit Breakers)</li>
   <li>Spring Security</li>  
   <li>Spring Batch</li>
   <li>Spring Integration</li>
