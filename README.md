@@ -5,6 +5,7 @@
 <h4>Technologies:</h4>
 <ul>
   <li>Java 8</li>
+  <li>Maven</li>  
   <li>Spring Boot</li>  
   <li>Spring Cloud (Registration and Service Discovery, Distributed/versioned configuration, Load balancing, Routing and Circuit Breakers)</li>
   <li>Spring Security</li>  
