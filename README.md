@@ -11,7 +11,8 @@
   <li>Spring Integration</li>
   <li>Spring Data</li>
   <li>Angular 8</li>
-  <li>MySQL Server</li>
+  <li>Bootstrap</li>  
+  <li>JQuery</li>
   <li>Redis</li>
   <li>Apache ActiveMQ</li>
  </ul>
