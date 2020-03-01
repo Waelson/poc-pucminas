@@ -11,7 +11,9 @@
   <li>Spring Integration</li>
   <li>Spring Data</li>
   <li>Angular 8</li>
-  <li>MySQL Server</li>  
+  <li>MySQL Server</li>
+  <li>Redis</li>
+  <li>Apache ActiveMQ</li>
  </ul>
 <h4>Deployment Diagram:</h4>
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/diagram_deployment.png">
