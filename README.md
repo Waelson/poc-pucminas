@@ -1,6 +1,6 @@
 # Architectural PoC to system based on Drop Shipping model.
 <br/>
-<strong>Important note:</strong> This repository is part of the final project to obtain my postgraduate degree.
+<strong>Important note:</strong> This repository is part of the final project to obtain my postgraduate degree in <strong>Distributed Software Architecture</strong>.
 <br/>
 <h4>Technologies:</h4>
 <ul>
@@ -24,4 +24,6 @@
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/components_diagram.png">
 <br/>
 <h4>Screenshots:</h4>
+<img src="https://github.com/Waelson/poc-pucminas/blob/master/admin_login.png">
+<center>UI administrative login</center>
 
