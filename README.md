@@ -27,11 +27,14 @@
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/admin_login.png">
 <small>Image 1: UI administrative login</small>
 <br/>
+<br/>
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/user_login.png">
 <small>Image 2: UI user login</small>
 <br/>
+<br/>
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/checkout.png">
 <small>Image 3: UI checkout</small>
+<br/>
 <br/>
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/product_list.png">
 <small>Image 3: UI product list</small>
