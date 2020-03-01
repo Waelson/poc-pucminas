@@ -25,5 +25,7 @@
 <br/>
 <h4>Screenshots:</h4>
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/admin_login.png">
-<center>UI administrative login</center>
+<small>Image 1: UI administrative login</small>
+<img src="https://github.com/Waelson/poc-pucminas/blob/master/user_login.png">
+<small>Image 2: UI user login</small>
 
