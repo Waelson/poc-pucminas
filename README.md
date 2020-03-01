@@ -7,6 +7,7 @@
   <li>Java 8</li>
   <li>Spring Boot</li>  
   <li>Spring Cloud (Netflix Cloud)</li>
+  <li>Spring Security</li>  
   <li>Spring Batch</li>
   <li>Spring Integration</li>
   <li>Spring Data</li>
@@ -21,3 +22,6 @@
 <br/>
 <h4>Components Diagram:</h4>
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/components_diagram.png">
+<br/>
+<h4>Screenshots:</h4>
+
