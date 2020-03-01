@@ -16,6 +16,7 @@
   <li>JQuery</li>
   <li>Redis</li>
   <li>Apache ActiveMQ</li>
+  <li>NGinx (cache to static files)</li>  
  </ul>
 <h4>Deployment Diagram:</h4>
 <img src="https://github.com/Waelson/poc-pucminas/blob/master/diagram_deployment.png">
