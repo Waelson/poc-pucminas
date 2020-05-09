@@ -1,6 +1,6 @@
 # Architectural PoC to system based on Drop Shipping model.
 <br/>
-<strong>Important note:</strong> This repository is part of the final project to obtain my postgraduate degree in <strong>Distributed Software Architecture</strong>.
+<strong>Important note:</strong> This repository is part of the final project to get postgraduate degree in <strong>Distributed Software Architecture</strong>.
 <br/>
 <h4>Technologies:</h4>
 <ul>
